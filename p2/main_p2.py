@@ -4,7 +4,8 @@ import math
 
 print(cv2.__version__)
 
-img_filepath = r"D:\SEMESTR6\PCPO\p2\cat.jpg"
+# img_filepath = r"D:\SEMESTR6\PCPO\p2\cat.jpg"
+img_filepath = r"C:\SEM6\PCPO\p2\cat.jpg"
 
 # ============== rysowanie prostokątu obsługa myszki ===========
 # points = []
@@ -30,35 +31,34 @@ img_filepath = r"D:\SEMESTR6\PCPO\p2\cat.jpg"
 #         break
 # cv2.destroyAllWindows()
 
-# ============================================= hold mouse
-# points = []
-# drawing = False  # True if mouse is pressed
-# s_x, s_y = -1, -1
-# # mouse callback function
-# def draw_rectangle(event, points, flags, param):
-#     # Storage point coordinates in the global variables
-#     global s_x, s_y, drawing
-#     if event == cv2.EVENT_LBUTTONDBLCLK:
-#         drawing = True
-#         s_x, s_y = x, y
-#     elif event == cv2.EVENT_MOUSEMOVE:
-#         if drawing == True:
-#             cv2.rectangle(img, (ix, iy), (x, y), (0, 255, 0), 2)
-#         elif event == cv2.EVENT_LBUTTONUP:
-#             drawing = False
-#             cv2.rectangle(img, (ix, iy), (x, y), (0, 255, 0), 2)
+# ============================================= hold mouse rect ===========================
+img = cv2.imread(img_filepath, 1)
+img2 = img.copy()
+drawing = False  # True if mouse is pressed
+s_x, s_y = -1, -1
+# mouse callback function
+def draw_rectangle(event, x, y, flags, param):
+    global img, s_x, s_y, drawing
+    if event == cv2.EVENT_LBUTTONDOWN:
+        drawing = True
+        s_x, s_y = x, y
+    elif event == cv2.EVENT_MOUSEMOVE:
+        if drawing == True:
+            img = img2.copy()
+            cv2.rectangle(img, (s_x, s_y), (x, y), (0, 255, 0), 2)
+    elif event == cv2.EVENT_LBUTTONUP:
+        drawing = False
+        cv2.rectangle(img, (s_x, s_y), (x, y), (0, 255, 0), 2)
 
 
-# # Main code
-# img = cv2.imread(img_filepath, 1)
-# cv2.namedWindow("image")
-# cv2.setMouseCallback("image", draw_rectangle)
-# while True:
-#     cv2.imshow("image", img)
-#     if cv2.waitKey(20) & 0xFF == 27:
-#         break
-# cv2.destroyAllWindows()
-# ============================================= hold mouse
+cv2.namedWindow("image")
+cv2.setMouseCallback("image", draw_rectangle)
+while True:
+    cv2.imshow("image", img)
+    if cv2.waitKey(20) & 0xFF == 27:
+        break
+cv2.destroyAllWindows()
+# ============================================= hold mouse rect ===========================
 
 # ========================= ODBICIA GÓRA DÓŁ, LEWA PRAWA ============
 # zdjęcie = wczytane zdjęcie
@@ -160,42 +160,38 @@ img_filepath = r"D:\SEMESTR6\PCPO\p2\cat.jpg"
 # (wysokosc, szerokosc, _) = zdjecie.shape
 # macierzTranslacji = np.float32([[1, 0, 50], [0, 1, 150], [0, 0, 1]])
 # print(macierzTranslacji)
-# zdjeciePoTranslacji = cv2.warpPerspective(
-#     zdjecie, macierzTranslacji, (wysokosc, szerokosc)
-# )
+# zdjeciePoTranslacji = cv2.warpPerspective(zdjecie, macierzTranslacji, (wysokosc, szerokosc))
 # cv2.imshow("Oryginalne", zdjecie)
 # cv2.imshow("Nowy obraz", zdjeciePoTranslacji)
 # cv2.waitKey(0)
 
-# ===================== skalowanie obrazu
+# ===================== skalowanie obrazu =========================
 zdjecie = cv2.imread(img_filepath, 1)
 wysokosc, szerokosc, _ = zdjecie.shape
 zdjeciePoSkalowaniu = cv2.resize(zdjecie, (int(szerokosc / 2), int(wysokosc / 2)))
 cv2.imshow("zdjeciePoSkalowaniu", zdjeciePoSkalowaniu)
 cv2.waitKey(0)
 
-zdjeciePoSkalowaniu = cv2.resize(
-    zdjecie, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_CUBIC
-)
+zdjeciePoSkalowaniu = cv2.resize(zdjecie, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_CUBIC)
 cv2.imshow("zdjeciePoSkalowaniu", zdjeciePoSkalowaniu)
 cv2.waitKey(0)
 
 
-# ===================== transformacja shear
+# ===================== transformacja shear ========================
 zdjecie = cv2.imread(img_filepath, 1)
 wysokosc, szerokosc, _ = zdjecie.shape
-macierzTransformacji = np.float32([[1, 0.5, 0], [0, 1, 0], [0, 0, 1]])
-# wysokosc = wymiary[0]
-# szerokość = wymiary[1]
-# ZROBIĆ LICZENIE NOWYCH WYMIARÓW
+print(wysokosc, szerokosc)
+macierzTransformacji = np.float32([[1, -0.5, 0], [-0.4, 1, 0], [0, 0, 1]])
 LD = macierzTransformacji @ np.float32([0, 0, 1])
 RU = macierzTransformacji @ np.float32([szerokosc, wysokosc, 1])
-print(LD, RU)
-wysokosc = LD
-szerokość = RU
-zdjeciePoPrzeksztalceniu = cv2.warpPerspective(
-    zdjecie, macierzTransformacji, (int(wysokosc), int(szerokosc))
-)
-cv2.imshow("Oryginalne", zdjecie)
-cv2.imshow("Nowy obraz", zdjeciePoPrzeksztalceniu)
+LU = macierzTransformacji @ np.float32([0, wysokosc, 1])
+RD = macierzTransformacji @ np.float32([szerokosc, 0, 1])
+wysokosc = abs(min([c[0] for c in [LD, RU, LU, RD]])) + abs(max([c[0] for c in [LD, RU, LU, RD]]))
+szerokosc = abs(min([c[1] for c in [LD, RU, LU, RD]])) + abs(max([c[1] for c in [LD, RU, LU, RD]]))
+dx = int(-1 * min([c[0] for c in [LD, RU, LU, RD]]))
+dy = int(-1 * min([c[1] for c in [LD, RU, LU, RD]]))
+macierzTransformacji[0][2] = dx
+macierzTransformacji[1][2] = dy
+zdjeciePoPochyleniu = cv2.warpPerspective(zdjecie, macierzTransformacji, (int(wysokosc + 0.5), int(szerokosc + 0.5)))
+cv2.imshow("Shear mapping", zdjeciePoPochyleniu)
 cv2.waitKey(0)
