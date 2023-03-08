@@ -36,6 +36,8 @@ img = cv2.imread(img_filepath, 1)
 img2 = img.copy()
 drawing = False  # True if mouse is pressed
 s_x, s_y = -1, -1
+
+
 # mouse callback function
 def draw_rectangle(event, x, y, flags, param):
     global img, s_x, s_y, drawing
@@ -49,6 +51,9 @@ def draw_rectangle(event, x, y, flags, param):
     elif event == cv2.EVENT_LBUTTONUP:
         drawing = False
         cv2.rectangle(img, (s_x, s_y), (x, y), (0, 255, 0), 2)
+        w = max(x, s_x) - min(x, s_x)
+        h = max(y, s_y) - min(y, s_y)
+        print(w, h)
 
 
 cv2.namedWindow("image")
