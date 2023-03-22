@@ -3,7 +3,7 @@ import cv2
 from scipy import ndimage
 
 
-def display(func):
+def display(func):  # eksperyment, don't ask...
     def wrapper(*args, **kwargs):
         keys = func.__code__.co_varnames[: func.__code__.co_argcount][::-1]
         sorter = {j: i for i, j in enumerate(keys[::-1])}
@@ -77,6 +77,7 @@ def roberts_cross(img, display=True):
 
 
 def prewitt_filter(img, display=True):
+    """Prewitt filter"""
     image_gaussian = cv2.GaussianBlur(img, (3, 3), 0)  # co?
     kernelx = np.array([[1, 1, 1], [0, 0, 0], [-1, -1, -1]])
     kernely = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
@@ -93,6 +94,7 @@ def prewitt_filter(img, display=True):
 
 
 def sobel_filter(img, ksize=5, display=True):
+    """Sobel filter"""
     img_gaussian = cv2.GaussianBlur(img, (3, 3), 0)  # co?
     img_sobelx = cv2.Sobel(img_gaussian, cv2.CV_8U, 1, 0, ksize=ksize)
     img_sobely = cv2.Sobel(img_gaussian, cv2.CV_8U, 0, 1, ksize=ksize)
@@ -107,8 +109,9 @@ def sobel_filter(img, ksize=5, display=True):
     return img_sobel
 
 
-@display  # eksperyment, nieważne
+@display
 def laplace_filter(img, ksize=3, display=True):  # ten laplacian tak ma działać?
+    """Laplace filter"""
     img_gaussian = cv2.GaussianBlur(img, (3, 3), 0)  # co?
     return cv2.Laplacian(img_gaussian, cv2.CV_64F, ksize=ksize)
 
