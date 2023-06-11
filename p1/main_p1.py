@@ -9,7 +9,7 @@ img2_path = r"C:\SEM6\PCPO\p1\butterfly.jpg"
 img_savefilepath = r"C:\SEM6\PCPO\p1\wynik.jpg"
 img = cv2.imread(img_filepath, flags=-1)  # 0 monochromatyczne 1 rgb -1 w/alpha
 # cv2.namedWindow("obrazdd", cv2.WINDOW_NORMAL)
-cv2.imshow(winname="obraz", mat=img)  # wyświetlenie okna z monochromatyczną wersją obrazu
+cv2.imshow(winname="obraz", mat=img)  # wyświetlenie okna
 key = cv2.waitKey(0)  # oczekiwanie na wciśnięcie przycisku przez użytkownika
 if key == 27:
     cv2.destroyAllWindows()  # usunięcie okna z obrazem i innych, jeżeli były stworzon

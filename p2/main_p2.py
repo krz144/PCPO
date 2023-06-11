@@ -4,8 +4,8 @@ import math
 
 print(cv2.__version__)
 
-# img_filepath = r"D:\SEMESTR6\PCPO\p2\cat.jpg"
 img_filepath = r"C:\SEM6\PCPO\p2\cat.jpg"
+# img_filepath = r"C:\Users\HARDPC\Desktop\orrrto.png"
 
 # ============== rysowanie prostokątu obsługa myszki ===========
 # points = []
@@ -112,63 +112,57 @@ cv2.destroyAllWindows()
 
 
 # ========================= zniekształcenie dystorsja radialna  ============
-# zdjecie = cv2.imread(img_filepath, 1)
-# znieksztalcenie = 3
-# # zapis do zmiennej wymiarów obrazu
-# (wysokosc, szerokosc, _) = zdjecie.shape
-# # Zdefiniowanie map przekształceń współrzędnych w formaciefloat32
-# mapaPrzeksztalcenX = np.zeros((wysokosc, szerokosc), np.float32)
-# mapaPrzeksztalcenY = np.zeros((wysokosc, szerokosc), np.float32)
-# wspolrzędnaXsrodka = szerokosc / 2
-# wspolrzędnaYsrodka = wysokosc / 2
-# promienNormalizujacy = szerokosc / 2
+zdjecie = cv2.imread(img_filepath, 1)
+znieksztalcenie = 3
+# zapis do zmiennej wymiarów obrazu
+(wysokosc, szerokosc, _) = zdjecie.shape
+# Zdefiniowanie map przekształceń współrzędnych w formaciefloat32
+mapaPrzeksztalcenX = np.zeros((wysokosc, szerokosc), np.float32)
+mapaPrzeksztalcenY = np.zeros((wysokosc, szerokosc), np.float32)
+wspolrzędnaXsrodka = szerokosc / 2
+wspolrzędnaYsrodka = wysokosc / 2
+promienNormalizujacy = szerokosc / 2
 
-# for y in range(wysokosc):
-#     deltaY = y - wspolrzędnaYsrodka
-#     for x in range(szerokosc):
-#         deltaX = x - wspolrzędnaXsrodka
-#         odlegloscOdSrodka = np.power(deltaX, 2) + np.power(deltaY, 2)
-#         if odlegloscOdSrodka >= np.power(promienNormalizujacy, 2):
-#             mapaPrzeksztalcenX[y, x] = x
-#             mapaPrzeksztalcenY[y, x] = y
-#         else:
-#             wspolczynnikiZnieksztalcenia = 1.0  # znieksztalcenie = 1 ??
-#         if odlegloscOdSrodka > 0.0:
-#             wspolczynnikiZnieksztalcenia = math.pow(
-#                 math.sin(
-#                     math.pi * math.sqrt(odlegloscOdSrodka) / promienNormalizujacy / 2
-#                 ),
-#                 znieksztalcenie,
-#             )
-#         mapaPrzeksztalcenX[y, x] = (
-#             wspolczynnikiZnieksztalcenia * deltaX + wspolrzędnaXsrodka
-#         )
-#         mapaPrzeksztalcenY[y, x] = (
-#             wspolczynnikiZnieksztalcenia * deltaY + wspolrzędnaYsrodka
-#         )
+for y in range(wysokosc):
+    deltaY = y - wspolrzędnaYsrodka
+    for x in range(szerokosc):
+        deltaX = x - wspolrzędnaXsrodka
+        odlegloscOdSrodka = np.power(deltaX, 2) + np.power(deltaY, 2)
+        if odlegloscOdSrodka >= np.power(promienNormalizujacy, 2):
+            mapaPrzeksztalcenX[y, x] = x
+            mapaPrzeksztalcenY[y, x] = y
+        else:
+            wspolczynnikiZnieksztalcenia = 1.0  # znieksztalcenie = 1 ??
+        if odlegloscOdSrodka > 0.0:
+            wspolczynnikiZnieksztalcenia = math.pow(
+                math.sin(math.pi * math.sqrt(odlegloscOdSrodka) / promienNormalizujacy / 2),
+                znieksztalcenie,
+            )
+        mapaPrzeksztalcenX[y, x] = wspolczynnikiZnieksztalcenia * deltaX + wspolrzędnaXsrodka
+        mapaPrzeksztalcenY[y, x] = wspolczynnikiZnieksztalcenia * deltaY + wspolrzędnaYsrodka
 
-# dst = cv2.remap(zdjecie, mapaPrzeksztalcenX, mapaPrzeksztalcenY, cv2.INTER_LINEAR)
+dst = cv2.remap(zdjecie, mapaPrzeksztalcenX, mapaPrzeksztalcenY, cv2.INTER_LINEAR)
 
-# cv2.imshow("Zniekształcone", dst)
-# cv2.waitKey(0)
+cv2.imshow("Zniekształcone", dst)
+cv2.waitKey(0)
 
 
 # ================= translacja z użyciem warpAffine() =============
-# zdjecie = cv2.imread(img_filepath, 1)
-# wysokosc, szerokosc, _ = zdjecie.shape
-# macierzTranslacji = np.float32([[1, 0, 50], [0, 1, 150]])
-# print(macierzTranslacji)
-# zdjeciePoTranslacji = cv2.warpAffine(zdjecie, macierzTranslacji, (wysokosc, szerokosc))
-# cv2.imshow("Oryginalne", zdjecie)
-# cv2.imshow("Nowy obraz", zdjeciePoTranslacji)
-# cv2.waitKey(0)
-# (wysokosc, szerokosc, _) = zdjecie.shape
-# macierzTranslacji = np.float32([[1, 0, 50], [0, 1, 150], [0, 0, 1]])
-# print(macierzTranslacji)
-# zdjeciePoTranslacji = cv2.warpPerspective(zdjecie, macierzTranslacji, (wysokosc, szerokosc))
-# cv2.imshow("Oryginalne", zdjecie)
-# cv2.imshow("Nowy obraz", zdjeciePoTranslacji)
-# cv2.waitKey(0)
+zdjecie = cv2.imread(img_filepath, 1)
+wysokosc, szerokosc, _ = zdjecie.shape
+macierzTranslacji = np.float32([[1, 0, 50], [0, 1, 150]])
+print(macierzTranslacji)
+zdjeciePoTranslacji = cv2.warpAffine(zdjecie, macierzTranslacji, (wysokosc, szerokosc))
+cv2.imshow("Oryginalne", zdjecie)
+cv2.imshow("Nowy obraz", zdjeciePoTranslacji)
+cv2.waitKey(0)
+(wysokosc, szerokosc, _) = zdjecie.shape
+macierzTranslacji = np.float32([[1, 0, 50], [0, 1, 150], [0, 0, 1]])
+print(macierzTranslacji)
+zdjeciePoTranslacji = cv2.warpPerspective(zdjecie, macierzTranslacji, (wysokosc, szerokosc))
+cv2.imshow("Oryginalne", zdjecie)
+cv2.imshow("Nowy obraz", zdjeciePoTranslacji)
+cv2.waitKey(0)
 
 # ===================== skalowanie obrazu =========================
 zdjecie = cv2.imread(img_filepath, 1)
